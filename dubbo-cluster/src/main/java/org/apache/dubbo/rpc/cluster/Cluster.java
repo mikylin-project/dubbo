@@ -33,7 +33,7 @@ import org.apache.dubbo.rpc.cluster.support.FailoverCluster;
  */
 @SPI(Cluster.DEFAULT)
 public interface Cluster {
-    String DEFAULT = FailoverCluster.NAME;
+    String DEFAULT = FailoverCluster.NAME; // failover
 
     /**
      * Merge the directory invokers to a virtual invoker.
