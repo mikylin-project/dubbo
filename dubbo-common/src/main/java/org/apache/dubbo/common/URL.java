@@ -95,22 +95,33 @@ import static org.apache.dubbo.common.utils.StringUtils.isBlank;
 public /*final**/
 class URL implements Serializable {
 
+    /**
+     * Dubbo 中 URL 的标准格式：
+     *
+     * protocol://username:password@host:port/path?key1=value1&key2=value2
+     */
+
     private static final long serialVersionUID = -1985165475234910535L;
 
+    // 协议类型
     protected String protocol;
 
+    // 用户名
     protected String username;
 
+    // 密码
     protected String password;
 
-    // by default, host to registry
+    // host
     protected String host;
 
-    // by default, port to registry
+    // 端口
     protected int port;
 
+    // 接口路径
     protected String path;
 
+    // param
     private final Map<String, String> parameters;
 
     private final Map<String, Map<String, String>> methodParameters;

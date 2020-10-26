@@ -45,31 +45,41 @@ public class RandomLoadBalance extends AbstractLoadBalance {
      */
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        // Number of invokers
+
+        // 获取服务提供者的数量
         int length = invokers.size();
-        // Every invoker has the same weight?
+
+        // 默认所有的服务提供者是相同的权重
         boolean sameWeight = true;
-        // the weight of every invokers
+
+        // 权重数组
         int[] weights = new int[length];
-        // the first invoker's weight
+
+        // 获取第一个服务提供者的权重
         int firstWeight = getWeight(invokers.get(0), invocation);
+        // 存入数组
         weights[0] = firstWeight;
-        // The sum of weights
+
+        // 权重的和
         int totalWeight = firstWeight;
+
+        // 轮询所有的提供者的权重并记录下来
         for (int i = 1; i < length; i++) {
+            // 此处和上方代码类似
             int weight = getWeight(invokers.get(i), invocation);
-            // save for later use
             weights[i] = weight;
-            // Sum
             totalWeight += weight;
+
+            // 如果遇到不一样的就把标识改成 false
             if (sameWeight && weight != firstWeight) {
                 sameWeight = false;
             }
         }
+
+        // 不同权重模式下的随机计算
+        // 大概思路是 row 一个随机值，并按照顺序进行相减，观察落在哪个区间内
         if (totalWeight > 0 && !sameWeight) {
-            // If (not every invoker has the same weight & at least one invoker's weight>0), select randomly based on totalWeight.
             int offset = ThreadLocalRandom.current().nextInt(totalWeight);
-            // Return a invoker based on the random value.
             for (int i = 0; i < length; i++) {
                 offset -= weights[i];
                 if (offset < 0) {
@@ -77,7 +87,8 @@ public class RandomLoadBalance extends AbstractLoadBalance {
                 }
             }
         }
-        // If all invokers have the same weight value or totalWeight=0, return evenly.
+
+        // 相同权重下的随机计算
         return invokers.get(ThreadLocalRandom.current().nextInt(length));
     }
 

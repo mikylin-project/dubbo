@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * StaticDirectory
+ * 静态不可变的 directory，在 dubbo 里是对 zk 等配置信息的封装
  */
 public class StaticDirectory<T> extends AbstractDirectory<T> {
     private static final Logger logger = LoggerFactory.getLogger(StaticDirectory.class);
