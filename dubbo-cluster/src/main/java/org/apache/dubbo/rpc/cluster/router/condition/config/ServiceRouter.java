@@ -26,6 +26,8 @@ public class ServiceRouter extends ListenableRouter {
     public static final String NAME = "SERVICE_ROUTER";
     /**
      * ServiceRouter should before AppRouter
+     *
+     * AppRouter 的优先度是 150
      */
     private static final int SERVICE_ROUTER_DEFAULT_PRIORITY = 140;
 

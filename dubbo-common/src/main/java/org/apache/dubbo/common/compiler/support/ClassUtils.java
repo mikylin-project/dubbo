@@ -80,6 +80,9 @@ public class ClassUtils {
         }
     }
 
+    /**
+     * 枚举基本类型，将字符串转化为 class
+     */
     public static Class<?> classForName(String className) throws ClassNotFoundException {
         switch (className) {
             case "boolean":
@@ -131,12 +134,18 @@ public class ClassUtils {
         }
     }
 
+    /**
+     * 返回数组 class
+     */
     private static Class<?> arrayForName(String className) throws ClassNotFoundException {
         return Class.forName(className.endsWith("[]")
                 ? "[L" + className.substring(0, className.length() - 2) + ";"
                 : className, true, Thread.currentThread().getContextClassLoader());
     }
 
+    /**
+     * 将基本类型转化为包装类型并返回
+     */
     public static Class<?> getBoxedClass(Class<?> type) {
         if (type == boolean.class) {
             return Boolean.class;

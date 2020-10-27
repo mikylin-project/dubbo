@@ -30,6 +30,9 @@ import java.util.List;
  *
  * @see org.apache.dubbo.rpc.cluster.Cluster#join(Directory)
  * @see org.apache.dubbo.rpc.cluster.Directory#list(Invocation)
+ *
+ *
+ * 路由层
  */
 public interface Router extends Comparable<Router> {
 
@@ -83,12 +86,14 @@ public interface Router extends Comparable<Router> {
     boolean isForce();
 
     /**
-     * Router's priority, used to sort routers.
-     *
-     * @return router's priority
+     * 路由的优先度
      */
     int getPriority();
 
+    /**
+     * 比较优先度
+     * 优先度值越小就越优先
+     */
     @Override
     default int compareTo(Router o) {
         if (o == null) {

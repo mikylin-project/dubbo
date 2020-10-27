@@ -121,9 +121,10 @@ class URL implements Serializable {
     // 接口路径
     protected String path;
 
-    // param
+    // url 的参数
     private final Map<String, String> parameters;
 
+    // 方法参数
     private final Map<String, Map<String, String>> methodParameters;
 
     // ==== cache ====
@@ -260,6 +261,8 @@ class URL implements Serializable {
         int port = 0;
         String path = null;
         Map<String, String> parameters = null;
+
+        // 对 params 进行字符串切割
         int i = url.indexOf('?'); // separator between body and parameters
         if (i >= 0) {
             String[] parts = url.substring(i + 1).split("&");
@@ -283,6 +286,8 @@ class URL implements Serializable {
             }
             url = url.substring(0, i);
         }
+
+        // 对协议类型进行切割
         i = url.indexOf("://");
         if (i >= 0) {
             if (i == 0) {
@@ -302,11 +307,14 @@ class URL implements Serializable {
             }
         }
 
+        // 对 path 进行切割
         i = url.indexOf('/');
         if (i >= 0) {
             path = url.substring(i + 1);
             url = url.substring(0, i);
         }
+
+        // 对 用户名密码 进行切割
         i = url.lastIndexOf('@');
         if (i >= 0) {
             username = url.substring(0, i);
@@ -1677,6 +1685,9 @@ class URL implements Serializable {
         return result;
     }
 
+    /**
+     * 所有参数相同即为相等
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

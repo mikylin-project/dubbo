@@ -29,12 +29,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Round robin load balance.
+ *
+ * 轮询负载均衡策略
  */
 public class RoundRobinLoadBalance extends AbstractLoadBalance {
     public static final String NAME = "roundrobin";
 
     private static final int RECYCLE_PERIOD = 60000;
 
+    /**
+     * 权重的封装
+     */
     protected static class WeightedRoundRobin {
         private int weight;
         private AtomicLong current = new AtomicLong(0);
@@ -143,6 +148,7 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
 
 
         // 对 map 进行自检
+        // 如果超过 60 秒都没有被调用，此处即认为服务已经异常，就会移除
         if (invokers.size() != map.size()) {
             map.entrySet().removeIf(item -> now - item.getValue().getLastUpdate() > RECYCLE_PERIOD);
         }

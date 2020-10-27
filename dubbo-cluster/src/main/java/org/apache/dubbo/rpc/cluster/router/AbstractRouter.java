@@ -21,8 +21,12 @@ import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.apache.dubbo.rpc.cluster.Router;
 import org.apache.dubbo.rpc.cluster.governance.GovernanceRuleRepository;
 
+/**
+ * 路由层模板抽象类
+ */
 public abstract class AbstractRouter implements Router {
-    protected int priority = DEFAULT_PRIORITY;
+
+    protected int priority = DEFAULT_PRIORITY; // 默认优先度为 int 的最大值
     protected boolean force = false;
     protected URL url;
 

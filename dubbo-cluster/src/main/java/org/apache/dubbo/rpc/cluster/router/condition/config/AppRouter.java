@@ -26,11 +26,15 @@ public class AppRouter extends ListenableRouter {
     public static final String NAME = "APP_ROUTER";
     /**
      * AppRouter should after ServiceRouter
+     *
+     * ServiceRouter 的优先度是 140
      */
     private static final int APP_ROUTER_DEFAULT_PRIORITY = 150;
 
     public AppRouter(URL url) {
+        // CommonConstants.APPLICATION_KEY = application
         super(url, url.getParameter(CommonConstants.APPLICATION_KEY));
-        this.priority = APP_ROUTER_DEFAULT_PRIORITY;
+
+        this.priority = APP_ROUTER_DEFAULT_PRIORITY; // 将优先度覆盖为了 150
     }
 }
