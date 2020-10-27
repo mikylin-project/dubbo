@@ -31,7 +31,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SpringContainer implements Container {
 
+    // 默认的 dubbo 配置中的 spring 的部分
     public static final String SPRING_CONFIG = "dubbo.spring.config";
+    // 默认的 spring 配置文件
     public static final String DEFAULT_SPRING_CONFIG = "classpath*:META-INF/spring/*.xml";
     private static final Logger logger = LoggerFactory.getLogger(SpringContainer.class);
     static ClassPathXmlApplicationContext context;
@@ -42,15 +44,22 @@ public class SpringContainer implements Container {
 
     @Override
     public void start() {
+
+        // 先去配置文件中找 spring 的配置，没有的话使用默认地址
         String configPath = ConfigUtils.getProperty(SPRING_CONFIG);
         if (StringUtils.isEmpty(configPath)) {
             configPath = DEFAULT_SPRING_CONFIG;
         }
+
+        // 启动容器
         context = new ClassPathXmlApplicationContext(configPath.split("[,\\s]+"), false);
         context.refresh();
         context.start();
     }
 
+    /**
+     * 停止容器
+     */
     @Override
     public void stop() {
         try {

@@ -40,6 +40,7 @@ public class NamedInternalThreadFactory extends NamedThreadFactory {
     @Override
     public Thread newThread(Runnable runnable) {
         String name = mPrefix + mThreadNum.getAndIncrement();
+        // dubbo 内置的 InternalThread，对 InternalThreadLocal 有特殊支持
         InternalThread ret = new InternalThread(mGroup, runnable, name, 0);
         ret.setDaemon(mDaemon);
         return ret;

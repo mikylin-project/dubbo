@@ -38,6 +38,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.DUMP_DIRECTORY;
 /**
  * Abort Policy.
  * Log warn info when abort.
+ *
+ * 抛弃策略
  */
 public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {
 
@@ -66,8 +68,13 @@ public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {
         this.url = url;
     }
 
+    /**
+     * 抛弃策略，记录日志之后，发起一个 Event 事件，并抛出错误
+     */
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+
+        // 记录日志
         String msg = String.format("Thread pool is EXHAUSTED!" +
                 " Thread Name: %s, Pool Size: %d (active: %d, core: %d, max: %d, largest: %d), Task: %d (completed: "
                 + "%d)," +
@@ -77,8 +84,14 @@ public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {
             e.getTaskCount(), e.getCompletedTaskCount(), e.isShutdown(), e.isTerminated(), e.isTerminating(),
             url.getProtocol(), url.getIp(), url.getPort());
         logger.warn(msg);
+
+        // 开启一个线程去写 jstack 日志
         dumpJStack();
+
+        // 抛出一个反馈事件
         dispatchThreadPoolExhaustedEvent(msg);
+
+        // 抛出错误
         throw new RejectedExecutionException(msg);
     }
 
@@ -93,11 +106,14 @@ public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {
     private void dumpJStack() {
         long now = System.currentTimeMillis();
 
+        // TEN_MINUTES_MILLS = 600000
+        // 十分钟写一次，控制频率
         //dump every 10 minutes
         if (now - lastPrintTime < TEN_MINUTES_MILLS) {
             return;
         }
 
+        // 限流
         if (!guard.tryAcquire()) {
             return;
         }
@@ -121,6 +137,7 @@ public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {
             //try-with-resources
             try (FileOutputStream jStackStream = new FileOutputStream(
                 new File(dumpPath, "Dubbo_JStack.log" + "." + dateStr))) {
+                // 文件流写日志
                 JVMUtil.jstack(jStackStream);
             } catch (Throwable t) {
                 logger.error("dump jStack error", t);

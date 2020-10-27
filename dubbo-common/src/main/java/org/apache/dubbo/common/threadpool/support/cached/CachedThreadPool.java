@@ -45,8 +45,22 @@ import static org.apache.dubbo.common.constants.CommonConstants.THREAD_NAME_KEY;
  */
 public class CachedThreadPool implements ThreadPool {
 
+    /**
+     * 创建一个 ThreadPoolExecutor
+     */
     @Override
     public Executor getExecutor(URL url) {
+
+        // THREAD_NAME_KEY = threadname
+        // DEFAULT_THREAD_NAME = Dubbo
+        // CORE_THREADS_KEY = corethreads
+        // DEFAULT_CORE_THREADS = 0
+        // THREADS_KEY = threads
+        // QUEUES_KEY = queues
+        // DEFAULT_QUEUES = 0
+        // ALIVE_KEY = alive
+        // DEFAULT_ALIVE = 60000
+
         String name = url.getParameter(THREAD_NAME_KEY, DEFAULT_THREAD_NAME);
         int cores = url.getParameter(CORE_THREADS_KEY, DEFAULT_CORE_THREADS);
         int threads = url.getParameter(THREADS_KEY, Integer.MAX_VALUE);

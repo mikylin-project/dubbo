@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * InternalThreadFactory.
+ *
+ * 比起普通的线程工厂，修改了线程命名规则
  */
 public class NamedThreadFactory implements ThreadFactory {
 
@@ -45,14 +47,17 @@ public class NamedThreadFactory implements ThreadFactory {
     public NamedThreadFactory(String prefix, boolean daemon) {
         mPrefix = prefix + "-thread-";
         mDaemon = daemon;
+        // 线程组，默认使用 SecurityManager 配置的
         SecurityManager s = System.getSecurityManager();
         mGroup = (s == null) ? Thread.currentThread().getThreadGroup() : s.getThreadGroup();
     }
 
     @Override
     public Thread newThread(Runnable runnable) {
+        // name = {prefix}-thread-{number}
         String name = mPrefix + mThreadNum.getAndIncrement();
         Thread ret = new Thread(mGroup, runnable, name, 0);
+        // 是否守护线程
         ret.setDaemon(mDaemon);
         return ret;
     }

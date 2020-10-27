@@ -1,23 +1,56 @@
 # Dubbo 中文注释
 请切换为 3.0 分支
 
-# 已经完成部分
+# 阅读分类
 
-### Common
+## dubbo-common
+### 1 Common
 ```
 org.apache.dubbo.common.Node
 
 org.apache.dubbo.common.compiler.support.ClassUtils
 ```
-
-
-## URL
+### 2 URL
 统一资源定位符。
 ```
 org.apache.dubbo.common.URL
 ```
+### 3 SPI
+spi 扩展
+```
+注解
+org.apache.dubbo.common.extension.SPI
+```
+### 4 ThreadPoolFactory
+```
+接口
+org.apache.dubbo.common.threadpool.ThreadPool
 
-## LoadBalance
+默认线程池工厂
+org.apache.dubbo.common.threadpool.support.cached.CachedThreadPool
+
+任务拒绝策略
+org.apache.dubbo.common.threadpool.support.AbortPolicyWithReport
+
+线程工厂
+org.apache.dubbo.common.utils.NamedThreadFactory
+
+线程工厂
+org.apache.dubbo.common.threadlocal.NamedInternalThreadFactory
+```
+
+## dubbo-container
+容器层。
+```
+接口
+org.apache.dubbo.container.Container
+
+spring 容器
+org.apache.dubbo.container.spring.SpringContainer
+```
+
+## dubbo-cluster
+### 1 LoadBalance
 负载均衡组件。
 ```
 接口
@@ -32,8 +65,7 @@ org.apache.dubbo.rpc.cluster.loadbalance.RandomLoadBalance
 轮询负载均衡策略
 org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance
 ```
-
-## Router
+### 2 Router
 路由组件。
 ```
 接口

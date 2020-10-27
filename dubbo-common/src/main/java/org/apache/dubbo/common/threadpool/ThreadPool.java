@@ -26,6 +26,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.THREADPOOL_KEY;
 
 /**
  * ThreadPool
+ *
+ * 线程池工厂
  */
 @SPI("fixed")
 public interface ThreadPool {
@@ -36,7 +38,7 @@ public interface ThreadPool {
      * @param url URL contains thread parameter
      * @return thread pool
      */
-    @Adaptive({THREADPOOL_KEY})
+    @Adaptive({THREADPOOL_KEY}) // THREADPOOL_KEY = threadpool
     Executor getExecutor(URL url);
 
 }
