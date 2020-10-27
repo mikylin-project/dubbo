@@ -38,11 +38,32 @@ import static org.apache.dubbo.common.constants.CommonConstants.THREAD_NAME_KEY;
  * Creates a thread pool that reuses a fixed number of threads
  *
  * @see java.util.concurrent.Executors#newFixedThreadPool(int)
+ *
+ * Dubbo 2.7.5 中，CachedThreadPool 是 provider 的默认线程池
  */
 public class FixedThreadPool implements ThreadPool {
 
+    /**
+     * 创建一个 ThreadPoolExecutor
+     */
     @Override
     public Executor getExecutor(URL url) {
+
+        // THREAD_NAME_KEY = threadname
+        // DEFAULT_THREAD_NAME = Dubbo
+        // THREADS_KEY = threads
+        // DEFAULT_THREADS = 200
+        // QUEUES_KEY = queues
+        // DEFAULT_QUEUES = 0
+
+        /**
+         * 默认情况下，这个被创建出来的 ThreadPoolExecutor 有 200 个线程，队列为 SynchronousQueue。
+         * 当存在超出 1 个线程往 SynchronousQueue 里插入元素的时候，SynchronousQueue 会阻塞线程，
+         * 所以理论上这个线程池不会触发拒绝策略，且第 202 个想要进行任务执行的线程会被阻塞住。
+         *
+         * 也就是说，默认情况下一个 Dubbo 的 provider 最多同时并发 201 个请求。
+         */
+
         String name = url.getParameter(THREAD_NAME_KEY, DEFAULT_THREAD_NAME);
         int threads = url.getParameter(THREADS_KEY, DEFAULT_THREADS);
         int queues = url.getParameter(QUEUES_KEY, DEFAULT_QUEUES);

@@ -81,6 +81,8 @@ public class ThreadlessExecutor extends AbstractExecutorService {
         Runnable runnable = queue.take();
 
         synchronized (lock) {
+            // 此处会将 waiting 设置为 false
+            // 此处如果还有任务进入到线程池中，就会交给 sharedExecutor 执行
             waiting = false;
             runnable.run();
         }
@@ -123,6 +125,10 @@ public class ThreadlessExecutor extends AbstractExecutorService {
      */
     @Override
     public void execute(Runnable runnable) {
+
+        // 默认情况下，waiting = true
+        // 那么 runnable 会被存储在队列里而不会被消费
+        // 只有当这个线程池开始执行 waitAndDrain() 方法之后，sharedExecutor 才会开始工作
         synchronized (lock) {
             if (!waiting) {
                 sharedExecutor.execute(runnable);

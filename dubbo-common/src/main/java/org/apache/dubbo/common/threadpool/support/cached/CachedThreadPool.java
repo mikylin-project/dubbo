@@ -42,6 +42,9 @@ import static org.apache.dubbo.common.constants.CommonConstants.THREAD_NAME_KEY;
  * the upcoming request.
  *
  * @see java.util.concurrent.Executors#newCachedThreadPool()
+ *
+ *
+ * Dubbo 2.7.5 中，CachedThreadPool 是 consumer 的默认线程池
  */
 public class CachedThreadPool implements ThreadPool {
 
@@ -60,6 +63,13 @@ public class CachedThreadPool implements ThreadPool {
         // DEFAULT_QUEUES = 0
         // ALIVE_KEY = alive
         // DEFAULT_ALIVE = 60000
+
+        /**
+         * 默认情况下，这个被创建出来的 ThreadPoolExecutor 的线程数最大可以达到 int 的最大值，
+         * 所以理论上队列和拒绝策略都是无效的。
+         *
+         * 也就是说，默认情况下一个 Dubbo 的 consumer 的并发请求可以说是无上限的（但是可能 OOM）。
+         */
 
         String name = url.getParameter(THREAD_NAME_KEY, DEFAULT_THREAD_NAME);
         int cores = url.getParameter(CORE_THREADS_KEY, DEFAULT_CORE_THREADS);

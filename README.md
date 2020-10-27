@@ -29,6 +29,9 @@ org.apache.dubbo.common.threadpool.ThreadPool
 默认线程池工厂
 org.apache.dubbo.common.threadpool.support.cached.CachedThreadPool
 
+默认线程池工厂
+org.apache.dubbo.common.threadpool.support.cached.FixedThreadPool
+
 任务拒绝策略
 org.apache.dubbo.common.threadpool.support.AbortPolicyWithReport
 
@@ -37,6 +40,9 @@ org.apache.dubbo.common.utils.NamedThreadFactory
 
 线程工厂
 org.apache.dubbo.common.threadlocal.NamedInternalThreadFactory
+
+无线程线程池
+org.apache.dubbo.common.threadpool.ThreadlessExecutor
 ```
 
 ## dubbo-container
