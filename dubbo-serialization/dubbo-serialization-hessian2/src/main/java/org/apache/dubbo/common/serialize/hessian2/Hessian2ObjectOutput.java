@@ -29,6 +29,10 @@ import java.io.OutputStream;
  */
 public class Hessian2ObjectOutput implements ObjectOutput {
 
+    /**
+     * 这个 ThreadLocal 中如果获取不到数据，会默认初始化一个 Output 对象
+     * Hessian 并非线程安全
+     */
     private static ThreadLocal<Hessian2Output> OUTPUT_TL = ThreadLocal.withInitial(() -> {
         Hessian2Output h2o = new Hessian2Output(null);
         h2o.setSerializerFactory(Hessian2FactoryInitializer.getInstance().getSerializerFactory());

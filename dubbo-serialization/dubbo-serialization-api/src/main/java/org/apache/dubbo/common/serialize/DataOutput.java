@@ -20,6 +20,8 @@ import java.io.IOException;
 
 /**
  * Basic data type output interface.
+ *
+ * 数据写入接口
  */
 public interface DataOutput {
 

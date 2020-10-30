@@ -30,6 +30,10 @@ import java.lang.reflect.Type;
  */
 public class Hessian2ObjectInput implements ObjectInput {
 
+    /**
+     * 这个 ThreadLocal 中如果获取不到数据，会默认初始化一个 Input 对象
+     * Hessian 并非线程安全
+     */
     private static ThreadLocal<Hessian2Input> INPUT_TL = ThreadLocal.withInitial(() -> {
         Hessian2Input h2i = new Hessian2Input(null);
         h2i.setSerializerFactory(Hessian2FactoryInitializer.getInstance().getSerializerFactory());

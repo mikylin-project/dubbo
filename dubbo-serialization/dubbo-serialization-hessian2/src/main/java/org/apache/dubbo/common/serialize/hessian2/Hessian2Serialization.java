@@ -38,11 +38,13 @@ public class Hessian2Serialization implements Serialization {
 
     @Override
     public byte getContentTypeId() {
+        // HESSIAN2_SERIALIZATION_ID = 2
         return HESSIAN2_SERIALIZATION_ID;
     }
 
     @Override
     public String getContentType() {
+        // ?
         return "x-application/hessian2";
     }
 
