@@ -48,6 +48,8 @@ public interface Protocol {
      * @param invoker Service invoker
      * @return exporter reference for exported service, useful for unexport the service later
      * @throws RpcException thrown when error occurs during export the service, for example: port is occupied
+     *
+     * 将一个 invoker 包装成一个 exporter
      */
     @Adaptive
     <T> Exporter<T> export(Invoker<T> invoker) throws RpcException;

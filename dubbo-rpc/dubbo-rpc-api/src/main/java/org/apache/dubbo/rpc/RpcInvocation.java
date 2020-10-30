@@ -53,7 +53,10 @@ public class RpcInvocation implements Invocation, Serializable {
     private String targetServiceUniqueName;
     private String protocolServiceKey;
 
+    // 方法名称
     private String methodName;
+
+    // 服务名称
     private String serviceName;
 
     private transient Class<?>[] parameterTypes;

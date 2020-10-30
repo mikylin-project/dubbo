@@ -38,6 +38,8 @@ public interface Exporter<T> {
      * <code>
      * getInvoker().destroy();
      * </code>
+     *
+     * 销毁方法
      */
     void unexport();
 

@@ -27,6 +27,8 @@ import java.util.stream.Stream;
  * @serial Don't change the class name and package name.
  * @see org.apache.dubbo.rpc.Invoker#invoke(Invocation)
  * @see org.apache.dubbo.rpc.RpcInvocation
+ *
+ * invoker 之间进行通讯的数据统一封装
  */
 public interface Invocation {
 

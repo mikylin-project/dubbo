@@ -24,6 +24,8 @@ import org.apache.dubbo.common.Node;
  * @see org.apache.dubbo.rpc.Protocol#refer(Class, org.apache.dubbo.common.URL)
  * @see org.apache.dubbo.rpc.InvokerListener
  * @see org.apache.dubbo.rpc.protocol.AbstractInvoker
+ *
+ * 一切皆 invoker
  */
 public interface Invoker<T> extends Node {
 
@@ -31,6 +33,8 @@ public interface Invoker<T> extends Node {
      * get service interface.
      *
      * @return service interface.
+     *
+     * 当前 invoker 实现的接口类
      */
     Class<T> getInterface();
 
@@ -40,6 +44,8 @@ public interface Invoker<T> extends Node {
      * @param invocation
      * @return result
      * @throws RpcException
+     *
+     * 执行方法调用
      */
     Result invoke(Invocation invocation) throws RpcException;
 
