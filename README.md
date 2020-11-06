@@ -56,6 +56,14 @@ org.apache.dubbo.container.spring.SpringContainer
 ```
 
 ## dubbo-cluster
+
+### 0 Cluster
+集群管理核心组件。
+```
+接口
+org.apache.dubbo.rpc.cluster.Cluster
+```
+
 ### 1 LoadBalance
 负载均衡组件。
 ```
@@ -87,4 +95,12 @@ org.apache.dubbo.rpc.cluster.loadbalance.RandomLoadBalance
 org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance
 ```
 
+### 3 Directory
+provider url 管理。
+```
+接口
+org.apache.dubbo.rpc.cluster.Directory
 
+模板
+org.apache.dubbo.rpc.cluster.directory.Directory
+```

@@ -30,6 +30,8 @@ import java.util.List;
  * <a href="http://en.wikipedia.org/wiki/Directory_service">Directory Service</a>
  *
  * @see org.apache.dubbo.rpc.cluster.Cluster#join(Directory)
+ *
+ * 字段，服务提供者信息的封装
  */
 public interface Directory<T> extends Node {
 

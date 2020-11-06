@@ -41,6 +41,7 @@ import static org.apache.dubbo.rpc.cluster.Constants.REFER_KEY;
 /**
  * Abstract implementation of Directory: Invoker list returned from this Directory's list method have been filtered by Routers
  *
+ * 字典模板
  */
 public abstract class AbstractDirectory<T> implements Directory<T> {
 
@@ -67,11 +68,28 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
             throw new IllegalArgumentException("url == null");
         }
 
+        /**
+         * REFER_KEY = "refer"
+         * PATH_KEY = "path"
+         * PROTOCOL_KEY = "protocol"
+         * MONITOR_KEY = "monitor"
+         * INTERFACE_KEY = "interface"
+         * DUBBO = "dubbo"
+         */
+
+        // 获取 url 里的参数
         queryMap = StringUtils.parseQueryString(url.getParameterAndDecoded(REFER_KEY));
+
         String path = queryMap.get(PATH_KEY);
+
+        // 协议，如果协议缺省则为 dubbo
         this.consumedProtocol = this.queryMap.get(PROTOCOL_KEY) == null ? DUBBO : this.queryMap.get(PROTOCOL_KEY);
+
+        // 将初始的 URL 删掉部分 param 之后获得的一个新的 URL 对象
+        // 此处的 url 是 new 出来的，并不是原来的对象
         this.url = url.removeParameter(REFER_KEY).removeParameter(MONITOR_KEY);
 
+        // 同理
         this.consumerUrl = this.url.setProtocol(consumedProtocol).setPath(path == null ? queryMap.get(INTERFACE_KEY) : path).addParameters(queryMap)
                 .removeParameter(MONITOR_KEY);
 
@@ -80,6 +98,8 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
 
     @Override
     public List<Invoker<T>> list(Invocation invocation) throws RpcException {
+
+        // 关闭状态下抛出异常
         if (destroyed) {
             throw new RpcException("Directory already destroyed .url: " + getUrl());
         }
@@ -128,6 +148,9 @@ public abstract class AbstractDirectory<T> implements Directory<T> {
         // do nothing by default
     }
 
+    /**
+     * 模板方法
+     */
     protected abstract List<Invoker<T>> doList(Invocation invocation) throws RpcException;
 
 }

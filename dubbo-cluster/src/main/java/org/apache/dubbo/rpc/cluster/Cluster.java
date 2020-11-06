@@ -30,6 +30,7 @@ import org.apache.dubbo.rpc.cluster.support.FailoverCluster;
  * <a href="http://en.wikipedia.org/wiki/Computer_cluster">Cluster</a>
  * <a href="http://en.wikipedia.org/wiki/Fault-tolerant_system">Fault-Tolerant</a>
  *
+ * 服务管理层接口
  */
 @SPI(Cluster.DEFAULT)
 public interface Cluster {
@@ -42,10 +43,16 @@ public interface Cluster {
      * @param directory
      * @return cluster invoker
      * @throws RpcException
+     *
+     *
+     * 核心接口方法，将所有的 provider 包装成 directory 对象并传入
      */
     @Adaptive
     <T> Invoker<T> join(Directory<T> directory) throws RpcException;
 
+    /**
+     * 通过 spi 获取 Cluster，默认 failover
+     */
     static Cluster getCluster(String name) {
         return getCluster(name, true);
     }
