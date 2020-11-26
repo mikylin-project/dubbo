@@ -29,9 +29,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * @see org.apache.dubbo.rpc.filter.ActiveLimitFilter
  * @see org.apache.dubbo.rpc.filter.ExecuteLimitFilter
  * @see org.apache.dubbo.rpc.cluster.loadbalance.LeastActiveLoadBalance
+ *
+ * RpcStatus 用于记录每个接口的状态，比如接收的请求数，正在执行的请求数等等
  */
 public class RpcStatus {
 
+    // 每一个 service 会有一个对应的 status
     private static final ConcurrentMap<String, RpcStatus> SERVICE_STATISTICS = new ConcurrentHashMap<String, RpcStatus>();
 
     private static final ConcurrentMap<String, ConcurrentMap<String, RpcStatus>> METHOD_STATISTICS = new ConcurrentHashMap<String, ConcurrentMap<String, RpcStatus>>();
@@ -272,9 +275,7 @@ public class RpcStatus {
     }
 
     /**
-     * get succeeded average elapsed.
-     *
-     * @return succeeded average elapsed
+     * 平均成功时间 = 总时间 / 成功次数
      */
     public long getSucceededAverageElapsed() {
         long succeeded = getSucceeded();

@@ -1369,6 +1369,9 @@ class URL implements Serializable {
         return buildString(false, true, parameters); // no show username and password
     }
 
+    /**
+     * 输出： protocol://username:password@host:port/path
+     */
     public String toIdentityString() {
         if (identity != null) {
             return identity;

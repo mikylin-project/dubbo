@@ -31,6 +31,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * If there is only one invoker, use the invoker directly;
  * if there are multiple invokers and the weights are not the same, then random according to the total weight;
  * if there are multiple invokers and the same weight, then randomly called.
+ *
+ * 根据最优解选择服务提供者
  */
 public class ShortestResponseLoadBalance extends AbstractLoadBalance {
 
@@ -38,35 +40,48 @@ public class ShortestResponseLoadBalance extends AbstractLoadBalance {
 
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        // Number of invokers
+
+        // 可调用的服务提供者的数量
         int length = invokers.size();
-        // Estimated shortest response time of all invokers
+        // 初始化一个最短 response 时间
         long shortestResponse = Long.MAX_VALUE;
-        // The number of invokers having the same estimated shortest response time
+        // 初始化一个最短 response 总数
         int shortestCount = 0;
         // The index of invokers having the same estimated shortest response time
         int[] shortestIndexes = new int[length];
-        // the weight of every invokers
+        // 每个服务提供者的权重
         int[] weights = new int[length];
-        // The sum of the warmup weights of all the shortest response  invokers
+        // 权重和
         int totalWeight = 0;
-        // The weight of the first shortest response invokers
+        // 调用平均返回时间最短的服务提供者的权重
         int firstWeight = 0;
-        // Every shortest response invoker has the same weight value?
+        // 权重是否相同
         boolean sameWeight = true;
 
-        // Filter out all the shortest response invokers
+        // 轮询所有的服务提供者
         for (int i = 0; i < length; i++) {
             Invoker<T> invoker = invokers.get(i);
+            // 获取服务提供者的状态
             RpcStatus rpcStatus = RpcStatus.getStatus(invoker.getUrl(), invocation.getMethodName());
-            // Calculate the estimated response time from the product of active connections and succeeded average elapsed time.
+            // 平均服务调用成功返回时间
             long succeededAverageElapsed = rpcStatus.getSucceededAverageElapsed();
+            // 正在活跃的请求数
             int active = rpcStatus.getActive();
+            // 此处用平均时间乘以活跃数，获得打分
+            // 如果服务提供方很健壮，平均时间很短，但是请求分配的很多，这里分数也会比较高
+            // 分数越低，优先级越高
             long estimateResponse = succeededAverageElapsed * active;
+
+            // 获取权重
             int afterWarmup = getWeight(invoker, invocation);
             weights[i] = afterWarmup;
-            // Same as LeastActiveLoadBalance
+
+            /**
+             * 计算最短数组，shortestResponse 记录当前最短的
+             */
             if (estimateResponse < shortestResponse) {
+                // 如果当前服务提供者的得分低于最低的得分，则更新最低得分，
+                // 并将最优提供者数组的首位置为当前的提供者
                 shortestResponse = estimateResponse;
                 shortestCount = 1;
                 shortestIndexes[0] = i;
@@ -74,6 +89,7 @@ public class ShortestResponseLoadBalance extends AbstractLoadBalance {
                 firstWeight = afterWarmup;
                 sameWeight = true;
             } else if (estimateResponse == shortestResponse) {
+                // 如果相等，则可能存在多个最优解
                 shortestIndexes[shortestCount++] = i;
                 totalWeight += afterWarmup;
                 if (sameWeight && i > 0
@@ -82,9 +98,12 @@ public class ShortestResponseLoadBalance extends AbstractLoadBalance {
                 }
             }
         }
+
+        // 最优解只有一个的情况，直接选最优解进行调用
         if (shortestCount == 1) {
             return invokers.get(shortestIndexes[0]);
         }
+        // 最优解不止一个，且最优解之间的权重不同，那么此处根据权重去随机选择一个
         if (!sameWeight && totalWeight > 0) {
             int offsetWeight = ThreadLocalRandom.current().nextInt(totalWeight);
             for (int i = 0; i < shortestCount; i++) {
@@ -95,6 +114,8 @@ public class ShortestResponseLoadBalance extends AbstractLoadBalance {
                 }
             }
         }
+
+        // 最优解不止一个，且权重相同，则随机选择
         return invokers.get(shortestIndexes[ThreadLocalRandom.current().nextInt(shortestCount)]);
     }
 }
