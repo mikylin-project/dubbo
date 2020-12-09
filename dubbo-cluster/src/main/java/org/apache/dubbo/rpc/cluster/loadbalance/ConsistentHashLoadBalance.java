@@ -34,6 +34,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.COMMA_SPLIT_PATT
 
 /**
  * ConsistentHashLoadBalance
+ *
+ * 一致性 hash 负载均衡方法
  */
 public class ConsistentHashLoadBalance extends AbstractLoadBalance {
     public static final String NAME = "consistenthash";
@@ -53,9 +55,11 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
+        // 反射调用的方法名
         String methodName = RpcUtils.getMethodName(invocation);
+        // key = 类名 + 方法名
         String key = invokers.get(0).getUrl().getServiceKey() + "." + methodName;
-        // using the hashcode of list to compute the hash only pay attention to the elements in the list
+        // hashcode
         int invokersHashCode = invokers.hashCode();
         ConsistentHashSelector<T> selector = (ConsistentHashSelector<T>) selectors.get(key);
         if (selector == null || selector.identityHashCode != invokersHashCode) {
@@ -76,9 +80,14 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
         private final int[] argumentIndex;
 
         ConsistentHashSelector(List<Invoker<T>> invokers, String methodName, int identityHashCode) {
+
+            // 将所有 invoker 装成一棵树
             this.virtualInvokers = new TreeMap<Long, Invoker<T>>();
+
             this.identityHashCode = identityHashCode;
             URL url = invokers.get(0).getUrl();
+
+            // 虚拟节点数量，默认 160 份
             this.replicaNumber = url.getMethodParameter(methodName, HASH_NODES, 160);
             String[] index = COMMA_SPLIT_PATTERN.split(url.getMethodParameter(methodName, HASH_ARGUMENTS, "0"));
             argumentIndex = new int[index.length];

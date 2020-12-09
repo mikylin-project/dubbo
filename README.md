@@ -1,3 +1,5 @@
+[toc]
+
 # Dubbo 中文注释
 请切换为 3.0 分支
 
@@ -78,6 +80,9 @@ org.apache.dubbo.rpc.cluster.loadbalance.RandomLoadBalance
 
 轮询负载均衡策略
 org.apache.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance
+
+最少连接负载均衡策略
+org.apache.dubbo.rpc.cluster.loadbalance.ShortestResponseLoadBalance
 ```
 ### 2 Router
 路由组件。
