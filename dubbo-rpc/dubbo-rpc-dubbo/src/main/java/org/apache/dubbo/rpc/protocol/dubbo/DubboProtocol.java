@@ -94,6 +94,7 @@ public class DubboProtocol extends AbstractProtocol {
 
     public static final String NAME = "dubbo";
 
+    // 默认启动端口
     public static final int DEFAULT_PORT = 20880;
     private static final String IS_CALLBACK_SERVICE_INVOKE = "_isCallBackServiceInvoke";
     private static DubboProtocol INSTANCE;
@@ -281,12 +282,17 @@ public class DubboProtocol extends AbstractProtocol {
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
         URL url = invoker.getUrl();
 
-        // export service.
+        // 将 invoker 包装成 DubboExporter 并保存起来
         String key = serviceKey(url);
         DubboExporter<T> exporter = new DubboExporter<T>(invoker, key, exporterMap);
         exporterMap.put(key, exporter);
 
-        //export an stub service for dispatching event
+        // DEFAULT_STUB_EVENT : dubbo.stub.event
+        // DEFAULT_STUB_EVENT : false
+        // STUB_EVENT_METHODS_KEY : dubbo.stub.event.methods
+        // INTERFACE_KEY : interface
+
+        // 记录日志
         Boolean isStubSupportEvent = url.getParameter(STUB_EVENT_KEY, DEFAULT_STUB_EVENT);
         Boolean isCallbackservice = url.getParameter(IS_CALLBACK_SERVICE, false);
         if (isStubSupportEvent && !isCallbackservice) {
@@ -300,6 +306,7 @@ public class DubboProtocol extends AbstractProtocol {
             }
         }
 
+        // 暴露服务
         openServer(url);
         optimizeSerialization(url);
 
@@ -307,11 +314,15 @@ public class DubboProtocol extends AbstractProtocol {
     }
 
     private void openServer(URL url) {
-        // find server.
+
+        // key = host:port
         String key = url.getAddress();
-        //client can export a service which's only for server to invoke
+
+        // IS_SERVER_KEY : isserver
+        // 如果服务的 param 里有 isserver=false，则不暴露服务，反之会暴露服务
         boolean isServer = url.getParameter(IS_SERVER_KEY, true);
         if (isServer) {
+            // 创建一个服务实例到 serverMap 里
             ProtocolServer server = serverMap.get(key);
             if (server == null) {
                 synchronized (this) {
@@ -341,6 +352,7 @@ public class DubboProtocol extends AbstractProtocol {
             throw new RpcException("Unsupported server type: " + str + ", url: " + url);
         }
 
+        // 绑定一个 exchange，exchange 会绑定 NettyTransporter 作为底层服务器
         ExchangeServer server;
         try {
             server = Exchangers.bind(url, requestHandler);
@@ -348,6 +360,7 @@ public class DubboProtocol extends AbstractProtocol {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
         }
 
+        // CLIENT_KEY : client
         str = url.getParameter(CLIENT_KEY);
         if (str != null && str.length() > 0) {
             Set<String> supportedTypes = ExtensionLoader.getExtensionLoader(Transporter.class).getSupportedExtensions();
@@ -356,6 +369,7 @@ public class DubboProtocol extends AbstractProtocol {
             }
         }
 
+        // 创建 DubboProtocolServer，绑定 remoting 和 exchange
         return new DubboProtocolServer(server);
     }
 

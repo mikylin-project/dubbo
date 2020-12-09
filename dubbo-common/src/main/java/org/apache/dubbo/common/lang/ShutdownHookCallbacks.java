@@ -32,6 +32,7 @@ import static org.apache.dubbo.common.function.ThrowableAction.execute;
  */
 public class ShutdownHookCallbacks {
 
+    // 静态列表
     public static final ShutdownHookCallbacks INSTANCE = new ShutdownHookCallbacks();
 
     private final List<ShutdownHookCallback> callbacks = new LinkedList<>();
@@ -47,6 +48,9 @@ public class ShutdownHookCallbacks {
         return this;
     }
 
+    /**
+     * 排序并返回
+     */
     public Collection<ShutdownHookCallback> getCallbacks() {
         synchronized (this) {
             sort(this.callbacks);
@@ -54,12 +58,16 @@ public class ShutdownHookCallbacks {
         }
     }
 
+    /**
+     * 清空 callback
+     */
     public void clear() {
         synchronized (this) {
             callbacks.clear();
         }
     }
 
+    // 将所有通过 spi 配置的对象装入到当前的 callback 对象里
     private void loadCallbacks() {
         ExtensionLoader<ShutdownHookCallback> loader =
                 ExtensionLoader.getExtensionLoader(ShutdownHookCallback.class);

@@ -116,6 +116,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
      */
     private static final ScheduledExecutorService DELAY_EXPORT_EXECUTOR = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("DubboServiceDelayExporter", true));
 
+    // 服务的解析类
     private static final Protocol PROTOCOL = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
 
     /**
@@ -158,6 +159,9 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         return unexported;
     }
 
+    /**
+     * 关闭所有的服务
+     */
     public void unexport() {
         if (!exported) {
             return;

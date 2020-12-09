@@ -63,6 +63,7 @@ public class RpcInvocation implements Invocation, Serializable {
     private String parameterTypesDesc;
     private String[] compatibleParamSignatures;
 
+    // 入参
     private Object[] arguments;
 
     /**

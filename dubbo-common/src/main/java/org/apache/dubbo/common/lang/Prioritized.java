@@ -25,11 +25,16 @@ import static java.lang.Integer.compare;
  * should be sorted, for example the tasks in executable queue.
  *
  * @since 2.7.5
+ *
+ * 优先级比较器接口
  */
 public interface Prioritized extends Comparable<Prioritized> {
 
     /**
      * The {@link Comparator} of {@link Prioritized}
+     *
+     * 返回的数大于 0 -- o1,o2,o3 。。。  (比较的时候排在前面的排在前面，o1 最大，o3 最小，降序排列)
+     * 返回的数小于 0 -- o3,o2,o1 。。。  (比较的时候排在后面的排在前面，o3 最大，o1 最小，升序排列)
      */
     Comparator<Object> COMPARATOR = (one, two) -> {
         boolean b1 = one instanceof Prioritized;
