@@ -27,15 +27,19 @@ public class ArrayMerger implements Merger<Object[]> {
 
     @Override
     public Object[] merge(Object[]... items) {
+
+        // 去空
         if (ArrayUtils.isEmpty(items)) {
             return new Object[0];
         }
 
+        // 去除元素的空值
         int i = 0;
         while (i < items.length && items[i] == null) {
             i++;
         }
 
+        // 如果已经结束了，那么此处返回空的数组
         if (i == items.length) {
             return new Object[0];
         }
