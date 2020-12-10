@@ -23,6 +23,8 @@ import org.apache.dubbo.rpc.Invoker;
 
 /**
  * AbstractExporter.
+ *
+ * exporter 模板
  */
 public abstract class AbstractExporter<T> implements Exporter<T> {
 
@@ -50,6 +52,9 @@ public abstract class AbstractExporter<T> implements Exporter<T> {
         return invoker;
     }
 
+    /**
+     * 销毁 invoker
+     */
     @Override
     public void unexport() {
         if (unexported) {

@@ -41,11 +41,16 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 /**
  * abstract ProtocolSupport.
+ *
+ * 代理层模板
  */
 public abstract class AbstractProtocol implements Protocol {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * exporter 的存放 map
+     */
     protected final Map<String, Exporter<?>> exporterMap = new ConcurrentHashMap<String, Exporter<?>>();
 
     /**
@@ -69,6 +74,9 @@ public abstract class AbstractProtocol implements Protocol {
         return Collections.unmodifiableList(new ArrayList<>(serverMap.values()));
     }
 
+    /**
+     * 将 exporter 和 invoker 销毁掉
+     */
     @Override
     public void destroy() {
         for (Invoker<?> invoker : invokers) {

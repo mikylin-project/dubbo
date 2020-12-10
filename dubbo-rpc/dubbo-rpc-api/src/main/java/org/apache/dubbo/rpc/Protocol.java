@@ -77,6 +77,8 @@ public interface Protocol {
      * 1. Cancel all services this protocol exports and refers <br>
      * 2. Release all occupied resources, for example: connection, port, etc. <br>
      * 3. Protocol can continue to export and refer new service even after it's destroyed.
+     *
+     * 销毁
      */
     void destroy();
 
@@ -84,6 +86,8 @@ public interface Protocol {
      * Get all servers serving this protocol
      *
      * @return
+     *
+     * 获取所有的服务提供方
      */
     default List<ProtocolServer> getServers() {
         return Collections.emptyList();

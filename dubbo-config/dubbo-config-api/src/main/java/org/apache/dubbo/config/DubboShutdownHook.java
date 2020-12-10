@@ -35,11 +35,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This is a singleton in order to ensure there is only one shutdown hook registered.
  * Because {@link ApplicationShutdownHooks} use {@link java.util.IdentityHashMap}
  * to store the shutdown hooks.
+ *
+ * Dubbo 优雅关闭
  */
 public class DubboShutdownHook extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(DubboShutdownHook.class);
 
+    // 单例模式
     private static final DubboShutdownHook DUBBO_SHUTDOWN_HOOK = new DubboShutdownHook("DubboShutdownHook");
 
     private final ShutdownHookCallbacks callbacks = ShutdownHookCallbacks.INSTANCE;
@@ -56,6 +59,7 @@ public class DubboShutdownHook extends Thread {
 
     private final EventDispatcher eventDispatcher = EventDispatcher.getDefaultExtension();
 
+    // 防止创建实例
     private DubboShutdownHook(String name) {
         super(name);
     }
