@@ -107,5 +107,5 @@ provider url 管理。
 org.apache.dubbo.rpc.cluster.Directory
 
 模板
-org.apache.dubbo.rpc.cluster.directory.Directory
+org.apache.dubbo.rpc.cluster.directory.AbstractDirectory
 ```
