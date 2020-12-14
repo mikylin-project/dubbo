@@ -109,3 +109,10 @@ org.apache.dubbo.rpc.cluster.Directory
 模板
 org.apache.dubbo.rpc.cluster.directory.AbstractDirectory
 ```
+
+
+# 知识 point
+### 1 CPU 分支预测
+```
+org.apache.dubbo.remoting.transport.dispatcher.ChannelEventRunnable
+```

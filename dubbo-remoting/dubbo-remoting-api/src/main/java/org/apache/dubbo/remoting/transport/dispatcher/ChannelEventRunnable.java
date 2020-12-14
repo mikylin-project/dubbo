@@ -52,6 +52,22 @@ public class ChannelEventRunnable implements Runnable {
 
     @Override
     public void run() {
+
+        /**
+         * 在 Dubbo 的实践中，99% 的情况都是走的 ChannelState.RECEIVED 分支，所以这个分支被单独提出来
+         *
+         * CPU 分支预测：
+         * CPU 在走 if 判断的时候，会尝试做预测并不等判断完成就直接开始走下面的逻辑块，
+         * 如果预测准确则继续下去，如果预测不准确就回退。
+         * 而 switch 在 jvm 底层会创建一个数组索引，现根据索引判断条件再走里面的逻辑块，
+         * 所以 switch 是无法走分支预测的，性能普遍会慢于 if。
+         *
+         * 但是 switch 会更加稳定，因为它的条件判断只走一次，而 if 会走多次。
+         * 如果 if 语句太多，且 CPU 的预测多次出现错误，则 if 代码块的性能远低于 switch。
+         *
+         * 具体可以百度搜索 ： site:dubbo.apache.org ChannelEventRunnable
+         * 官网有资料介绍
+         */
         if (state == ChannelState.RECEIVED) {
             try {
                 handler.received(channel, message);
