@@ -59,13 +59,19 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
         String methodName = RpcUtils.getMethodName(invocation);
         // key = 类名 + 方法名
         String key = invokers.get(0).getUrl().getServiceKey() + "." + methodName;
-        // hashcode
+        // 获取 invoker 的 hashcode
         int invokersHashCode = invokers.hashCode();
+
+
         ConsistentHashSelector<T> selector = (ConsistentHashSelector<T>) selectors.get(key);
+
+
         if (selector == null || selector.identityHashCode != invokersHashCode) {
             selectors.put(key, new ConsistentHashSelector<T>(invokers, methodName, invokersHashCode));
             selector = (ConsistentHashSelector<T>) selectors.get(key);
         }
+
+
         return selector.select(invocation);
     }
 
@@ -82,6 +88,7 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
         ConsistentHashSelector(List<Invoker<T>> invokers, String methodName, int identityHashCode) {
 
             // 将所有 invoker 装成一棵树
+            // 这里感觉的设计逻辑是因为不会特别多，所以 treemap 就够了
             this.virtualInvokers = new TreeMap<Long, Invoker<T>>();
 
             this.identityHashCode = identityHashCode;
@@ -94,6 +101,8 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
             for (int i = 0; i < index.length; i++) {
                 argumentIndex[i] = Integer.parseInt(index[i]);
             }
+
+
             for (Invoker<T> invoker : invokers) {
                 String address = invoker.getUrl().getAddress();
                 for (int i = 0; i < replicaNumber / 4; i++) {
